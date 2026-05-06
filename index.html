@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cindy辛迪健康助手</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #6C5CE7;
+            --primary-light: #A29BFE;
+            --primary-bg: #F0EEFF;
+            --gradient: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 50%, #74B9FF 100%);
+            --gradient-warm: linear-gradient(135deg, #FDCB6E 0%, #E17055 100%);
+            --success: #00B894;
+            --success-light: #E8F8F5;
+            --warning: #FDCB6E;
+            --danger: #E17055;
+            --text: #2D3436;
+            --text-sub: #636E72;
+            --text-light: #B2BEC3;
+            --bg: #F8F9FE;
+            --white: #FFFFFF;
+            --shadow: 0 4px 20px rgba(108,92,231,0.12);
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: var(--white);
+            border-radius: 44px;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.15);
+            position: relative;
+        }
+        .phone-notch {
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 160px; height: 34px;
+            background: #000;
+            border-radius: 0 0 22px 22px;
+            z-index: 200;
+        }
+        .status-bar {
+            height: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 28px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 150;
+            position: relative;
+        }
+        .page-container {
+            height: calc(100% - 50px - 72px);
+            overflow: hidden;
+            position: relative;
+        }
+        .page {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            overflow-y: auto;
+            display: none;
+            -webkit-overflow-scrolling: touch;
+        }
+        .page.active { display: block; }
+        .page::-webkit-scrollbar { display: none; }
+
+        /* ===== Tab Bar ===== */
+        .tab-bar {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 72px;
+            background: var(--white);
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            padding-top: 8px;
+            border-top: 1px solid #F0F0F5;
+            z-index: 200;
+        }
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .tab-icon {
+            width: 28px; height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+        .tab-label {
+            font-size: 10px;
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+        .tab-item.active .tab-label {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .tab-center {
+            margin-top: -20px;
+            width: 56px; height: 56px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 20px rgba(108,92,231,0.4);
+            transition: transform 0.2s;
+        }
+        .tab-center:active { transform: scale(0.92); }
+        .tab-center .tab-icon { font-size: 28px; filter: brightness(10); }
+        .tab-center .tab-label { display: none; }
+
+        /* ===== HOME PAGE ===== */
+        .home-hero {
+            background: var(--gradient);
+            margin: 12px 16px;
+            border-radius: 24px;
+            padding: 24px 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .home-hero::after {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 160px; height: 160px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        .home-hero-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            position: relative;
+            z-index: 1;
+        }
+        .home-hero-text { flex: 1; }
+        .home-mascot {
+            flex-shrink: 0;
+            width: 100px;
+            height: 100px;
+        }
+        .mascot-img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
+        }
+        .mascot-fallback {
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            backdrop-filter: blur(4px);
+        }
+        .mascot-fallback span {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+        .home-greeting { font-size: 14px; opacity: 0.9; }
+        .home-date { font-size: 12px; opacity: 0.7; margin-top: 2px; }
+        .home-quote {
+            margin-top: 16px;
+            font-size: 15px;
+            line-height: 1.6;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+        .home-quote-author {
+            margin-top: 6px;
+            font-size: 11px;
+            opacity: 0.7;
+            text-align: right;
+        }
+
+        .home-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 0 16px;
+            margin-top: 16px;
+        }
+        .home-stat-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 16px 12px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+        .stat-icon { font-size: 24px; margin-bottom: 6px; }
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .stat-unit { font-size: 11px; color: var(--text-sub); }
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-sub);
+            margin-top: 2px;
+        }
+        .stat-change {
+            font-size: 10px;
+            margin-top: 4px;
+            padding: 2px 6px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        .stat-change.down { background: #E8F8F5; color: var(--success); }
+        .stat-change.up { background: #FFF3E0; color: var(--danger); }
+
+        .home-goal {
+            margin: 16px 16px;
+            background: var(--white);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+        .goal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .goal-title { font-size: 14px; font-weight: 600; color: var(--text); }
+        .goal-edit { font-size: 12px; color: var(--primary); cursor: pointer; }
+        .goal-bar {
+            height: 10px;
+            background: #F0F0F5;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+        .goal-fill {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 5px;
+            width: 72%;
+            transition: width 1s ease;
+        }
+        .goal-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 11px;
+            color: var(--text-sub);
+        }
+        .goal-current { color: var(--primary); font-weight: 600; }
+
+        .home-reminder {
+            margin: 0 16px 16px;
+            background: linear-gradient(135deg, #FFEAA7 0%, #FDCB6E 100%);
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .reminder-icon { font-size: 28px; }
+        .reminder-text { font-size: 13px; color: #6D4C00; font-weight: 500; flex: 1; }
+        .reminder-badge {
+            padding: 4px 10px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 12px;
+            font-size: 11px;
+            color: #6D4C00;
+        }
+
+        /* ===== CHECK-IN PAGE ===== */
+        .checkin-header {
+            text-align: center;
+            padding: 24px 20px 16px;
+        }
+        .checkin-title { font-size: 18px; font-weight: 600; color: var(--text); }
+        .checkin-subtitle { font-size: 12px; color: var(--text-sub); margin-top: 4px; }
+
+        .checkin-card {
+            margin: 0 16px 16px;
+            background: var(--white);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+        .checkin-card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .checkin-card-title .emoji { font-size: 20px; }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .input-label {
+            width: 70px;
+            font-size: 13px;
+            color: var(--text-sub);
+            flex-shrink: 0;
+        }
+        .input-field {
+            flex: 1;
+            height: 42px;
+            border: 1.5px solid #E8E8F0;
+            border-radius: 12px;
+            padding: 0 14px;
+            font-size: 15px;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+        .input-field:focus { border-color: var(--primary-light); }
+        .input-unit { font-size: 12px; color: var(--text-sub); }
+
+        /* WHR result */
+        .whr-result {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px dashed #E8E8F0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .whr-label {
+            font-size: 13px;
+            color: var(--text-sub);
+        }
+        .whr-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+        }
+        .whr-status {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+        .whr-status.good { background: var(--success-light); color: var(--success); }
+        .whr-status.warn { background: #FFF3E0; color: #E67E22; }
+        .whr-status.bad { background: #FDEDEC; color: var(--danger); }
+
+        .checkin-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .checkin-tag {
+            padding: 8px 14px;
+            background: var(--bg);
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--text-sub);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .checkin-tag.active {
+            background: var(--primary-bg);
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* Exercise detail panels */
+        .exercise-detail {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px dashed #E8E8F0;
+            display: none;
+        }
+        .exercise-detail.show { display: block; }
+        .exercise-detail-title {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-bottom: 12px;
+            padding-left: 2px;
+        }
+
+        /* Strength body-part selector */
+        .strength-parts {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .strength-part {
+            flex: 1;
+            padding: 12px 8px;
+            background: var(--bg);
+            border-radius: 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        .strength-part .part-icon {
+            font-size: 22px;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .strength-part .part-name {
+            font-size: 12px;
+            color: var(--text-sub);
+        }
+        .strength-part.active {
+            border-color: var(--primary-light);
+            background: var(--primary-bg);
+        }
+        .strength-part.active .part-name {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .checkin-diet-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .diet-tag {
+            padding: 6px 12px;
+            background: var(--bg);
+            border-radius: 16px;
+            font-size: 12px;
+            color: var(--text-sub);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .diet-tag.active {
+            background: var(--success-light);
+            color: var(--success);
+            font-weight: 500;
+        }
+
+        .checkin-btn {
+            display: block;
+            margin: 20px 16px 0;
+            padding: 16px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(108,92,231,0.3);
+            transition: transform 0.2s;
+            font-family: inherit;
+        }
+        .checkin-btn:active { transform: scale(0.97); }
+
+        /* Checkin mascot card */
+        .checkin-mascot-card {
+            margin: 20px 16px 16px;
+            background: var(--white);
+            border-radius: 20px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: var(--shadow-sm);
+        }
+        .checkin-mascot-img {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+        .checkin-mascot-text { flex: 1; }
+        .mascot-speech {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .mascot-speech-sub {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-top: 4px;
+        }
+
+        .checkin-note {
+            margin: 12px 16px;
+            background: var(--primary-bg);
+            border-radius: 12px;
+            padding: 12px 14px;
+        }
+        .checkin-note-text {
+            font-size: 13px;
+            color: var(--primary);
+            line-height: 1.6;
+            text-align: center;
+        }
+        .checkin-note-author {
+            font-size: 11px;
+            color: var(--primary-light);
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        /* ===== DATA PAGE ===== */
+        .data-header {
+            padding: 20px 16px 0;
+        }
+        .data-title { font-size: 18px; font-weight: 600; }
+        .data-tabs {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .data-tab {
+            padding: 6px 14px;
+            background: var(--bg);
+            border-radius: 16px;
+            font-size: 12px;
+            color: var(--text-sub);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .data-tab.active {
+            background: var(--primary);
+            color: white;
+            font-weight: 500;
+        }
+
+        .chart-card {
+            margin: 16px;
+            background: var(--white);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+        .chart-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .chart-subtitle { font-size: 11px; color: var(--text-light); }
+
+        .weight-chart {
+            margin-top: 16px;
+            height: 180px;
+            position: relative;
+        }
+        .chart-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .chart-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .chart-stat {
+            text-align: center;
+            padding: 10px;
+            background: var(--bg);
+            border-radius: 12px;
+        }
+        .chart-stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .chart-stat-label {
+            font-size: 10px;
+            color: var(--text-sub);
+            margin-top: 2px;
+        }
+
+        /* Data page mascot tip */
+        .data-mascot-tip {
+            margin: 0 16px 16px;
+            background: var(--primary-bg);
+            border-radius: 20px;
+            padding: 20px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .data-mascot-img {
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+        .data-mascot-text { flex: 1; }
+        .data-mascot-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .data-mascot-desc {
+            font-size: 12px;
+            color: var(--primary-light);
+            margin-top: 4px;
+        }
+
+        .body-composition {
+            margin: 0 16px 16px;
+            background: var(--white);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+        .composition-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .composition-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .composition-item:last-child { margin-bottom: 0; }
+        .comp-icon {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .comp-info { flex: 1; }
+        .comp-name { font-size: 13px; color: var(--text); }
+        .comp-bar {
+            height: 6px;
+            background: #F0F0F5;
+            border-radius: 3px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+        .comp-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        .comp-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            min-width: 50px;
+            text-align: right;
+        }
+
+        /* ===== CALENDAR PAGE ===== */
+        .calendar-header {
+            padding: 20px 16px 0;
+        }
+        .calendar-title { font-size: 18px; font-weight: 600; }
+        .calendar-month {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+        .calendar-month-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .calendar-nav {
+            display: flex;
+            gap: 8px;
+        }
+        .calendar-nav-btn {
+            width: 32px; height: 32px;
+            background: var(--bg);
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            color: var(--text);
+        }
+
+        .calendar-grid-card {
+            margin: 16px;
+            background: var(--white);
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+        .calendar-weekday {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-light);
+            padding: 4px 0;
+        }
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+        .cal-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: var(--text);
+            border-radius: 10px;
+            position: relative;
+        }
+        .cal-day.empty { visibility: hidden; }
+        .cal-day.today {
+            background: var(--primary);
+            color: white;
+            font-weight: 700;
+        }
+        .cal-day.checked::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            width: 5px; height: 5px;
+            background: var(--success);
+            border-radius: 50%;
+        }
+        .cal-day.today.checked::after {
+            background: white;
+        }
+        .cal-day.missed::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            width: 5px; height: 5px;
+            background: var(--danger);
+            border-radius: 50%;
+        }
+        .cal-day.future { color: var(--text-light); }
+
+        .streak-card {
+            margin: 0 16px 16px;
+            background: var(--gradient);
+            border-radius: 20px;
+            padding: 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .streak-fire { font-size: 48px; }
+        .streak-info {}
+        .streak-number { font-size: 36px; font-weight: 800; line-height: 1; }
+        .streak-label { font-size: 13px; opacity: 0.9; margin-top: 4px; }
+        .streak-record { font-size: 11px; opacity: 0.7; margin-top: 2px; }
+
+        .badges-section {
+            margin: 0 16px 16px;
+        }
+        .badges-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        .badge-item {
+            text-align: center;
+        }
+        .badge-icon {
+            width: 56px; height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto;
+        }
+        .badge-icon.earned { background: var(--gradient); box-shadow: 0 4px 12px rgba(108,92,231,0.3); }
+        .badge-icon.locked { background: #F0F0F5; filter: grayscale(1); }
+        .badge-name { font-size: 10px; color: var(--text-sub); margin-top: 6px; }
+        .badge-name.locked { color: var(--text-light); }
+
+        /* ===== PROFILE PAGE ===== */
+        .profile-header {
+            background: var(--gradient);
+            margin: 12px 16px;
+            border-radius: 24px;
+            padding: 24px 20px;
+            color: white;
+            text-align: center;
+        }
+        .profile-avatar {
+            width: 72px; height: 72px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+        .profile-name { font-size: 18px; font-weight: 600; }
+        .profile-join { font-size: 12px; opacity: 0.8; margin-top: 4px; }
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+        .profile-stat-value { font-size: 20px; font-weight: 700; }
+        .profile-stat-label { font-size: 11px; opacity: 0.8; }
+
+        .profile-menu {
+            margin: 16px;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: var(--white);
+            border-radius: 14px;
+            margin-bottom: 8px;
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .menu-item:active { transform: scale(0.98); }
+        .menu-icon {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-right: 12px;
+        }
+        .menu-info { flex: 1; }
+        .menu-title { font-size: 14px; font-weight: 500; color: var(--text); }
+        .menu-desc { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+        .menu-arrow { color: var(--text-light); font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="status-bar">
+            <span>9:02</span>
+            <span style="font-size:11px;">Cindy</span>
+            <span>📶 📡 🔋</span>
+        </div>
+
+        <div class="page-container">
+            <!-- ===== HOME ===== -->
+            <div class="page active" id="page-home">
+                <div class="home-hero">
+                    <div class="home-hero-top">
+                        <div class="home-hero-text">
+                            <div class="home-greeting">早安，星辰 ☀️</div>
+                            <div class="home-date">2026年5月6日 · 周三</div>
+                            <div class="home-quote">
+                                "不积跬步，无以至千里。每天的坚持，都在靠近更好的自己。"
+                            </div>
+                            <div class="home-quote-author">— 荀子《劝学》</div>
+                        </div>
+                        <div class="home-mascot">
+                            <img src="mascot.png" alt="Cindy" class="mascot-img">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="home-stats">
+                    <div class="home-stat-card">
+                        <div class="stat-icon">⚖️</div>
+                        <div class="stat-value">68.5</div>
+                        <div class="stat-unit">kg</div>
+                        <div class="stat-label">今日体重</div>
+                        <div class="stat-change down">↓ 0.3 本周</div>
+                    </div>
+                    <div class="home-stat-card">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-value">18.5</div>
+                        <div class="stat-unit">%</div>
+                        <div class="stat-label">体脂率</div>
+                        <div class="stat-change down">↓ 0.2 本周</div>
+                    </div>
+                    <div class="home-stat-card">
+                        <div class="stat-icon">📏</div>
+                        <div class="stat-value">0.82</div>
+                        <div class="stat-unit"></div>
+                        <div class="stat-label">腰臀比</div>
+                        <div class="stat-change down">↓ 0.01 本周</div>
+                    </div>
+                </div>
+
+                <div class="home-goal">
+                    <div class="goal-header">
+                        <div class="goal-title">🎯 今日目标</div>
+                        <div class="goal-edit">编辑</div>
+                    </div>
+                    <div class="goal-bar">
+                        <div class="goal-fill"></div>
+                    </div>
+                    <div class="goal-info">
+                        <span class="goal-current">体重 68.5 kg</span>
+                        <span>体脂 18.5%</span>
+                        <span>WHR 0.82</span>
+                    </div>
+                </div>
+
+                <div class="home-reminder">
+                    <span class="reminder-icon">⏰</span>
+                    <span class="reminder-text">今日尚未打卡</span>
+                    <span class="reminder-badge">去打卡 ></span>
+                </div>
+            </div>
+
+            <!-- ===== CHECK-IN ===== -->
+            <div class="page" id="page-checkin">
+                <div class="checkin-header">
+                    <div class="checkin-title">✏️ 今日打卡</div>
+                    <div class="checkin-subtitle">记录体重 · 体脂 · 腰臀比，见证每一天的变化</div>
+                </div>
+
+                <div class="checkin-note" id="checkin-quote">
+                    <div class="checkin-note-text">"自律即自由。管理好身体，才能管理好人生。"</div>
+                    <div class="checkin-note-author">— 康德</div>
+                </div>
+
+                <div class="checkin-card">
+                    <div class="checkin-card-title">
+                        <span class="emoji">⚖️</span> 身体数据
+                    </div>
+                    <div class="input-row">
+                        <span class="input-label">体重</span>
+                        <input class="input-field" type="number" placeholder="输入体重" value="68.5">
+                        <span class="input-unit">kg</span>
+                    </div>
+                    <div class="input-row">
+                        <span class="input-label">体脂率</span>
+                        <input class="input-field" type="number" placeholder="输入体脂率" value="18.5">
+                        <span class="input-unit">%</span>
+                    </div>
+                    <div class="input-row">
+                        <span class="input-label">腰围</span>
+                        <input class="input-field" type="number" id="input-waist" placeholder="输入腰围" oninput="calcWHR()">
+                        <span class="input-unit">cm</span>
+                    </div>
+                    <div class="input-row">
+                        <span class="input-label">臀围</span>
+                        <input class="input-field" type="number" id="input-hip" placeholder="输入臀围" oninput="calcWHR()">
+                        <span class="input-unit">cm</span>
+                    </div>
+                    <div class="whr-result" id="whr-result" style="display:none;">
+                        <div class="whr-label">📏 腰臀比</div>
+                        <div class="whr-value" id="whr-value">0.82</div>
+                        <div class="whr-status" id="whr-status">正常范围</div>
+                    </div>
+                </div>
+
+                <div class="checkin-card">
+                    <div class="checkin-card-title">
+                        <span class="emoji">🏃</span> 运动记录
+                    </div>
+                    <div class="checkin-tags" id="exercise-tags">
+                        <span class="checkin-tag active" data-type="running" onclick="selectExercise(this)">🏃 跑步</span>
+                        <span class="checkin-tag" data-type="cycling" onclick="selectExercise(this)">🚴 骑行</span>
+                        <span class="checkin-tag" data-type="swimming" onclick="selectExercise(this)">🏊 游泳</span>
+                        <span class="checkin-tag" data-type="strength" onclick="selectExercise(this)">🏋️ 力量</span>
+                        <span class="checkin-tag" data-type="yoga" onclick="selectExercise(this)">🧘 瑜伽</span>
+                        <span class="checkin-tag" data-type="walking" onclick="selectExercise(this)">🚶 步行</span>
+                    </div>
+
+                    <!-- 跑步详情 -->
+                    <div class="exercise-detail show" id="detail-running">
+                        <div class="exercise-detail-title">🏃 跑步详情</div>
+                        <div class="input-row">
+                            <span class="input-label">时长</span>
+                            <input class="input-field" type="number" placeholder="运动时长">
+                            <span class="input-unit">分钟</span>
+                        </div>
+                        <div class="input-row">
+                            <span class="input-label">距离</span>
+                            <input class="input-field" type="number" placeholder="跑步距离">
+                            <span class="input-unit">km</span>
+                        </div>
+                        <div class="input-row">
+                            <span class="input-label">配速</span>
+                            <input class="input-field" type="text" placeholder="如 5'30&quot;">
+                            <span class="input-unit">min/km</span>
+                        </div>
+                    </div>
+
+                    <!-- 力量详情 -->
+                    <div class="exercise-detail" id="detail-strength">
+                        <div class="exercise-detail-title">🏋️ 选择训练部位</div>
+                        <div class="strength-parts">
+                            <div class="strength-part" onclick="selectPart(this)">
+                                <span class="part-icon">🦵</span>
+                                <span class="part-name">臀腿</span>
+                            </div>
+                            <div class="strength-part" onclick="selectPart(this)">
+                                <span class="part-icon">💪</span>
+                                <span class="part-name">核心</span>
+                            </div>
+                            <div class="strength-part" onclick="selectPart(this)">
+                                <span class="part-icon">🤸</span>
+                                <span class="part-name">上肢</span>
+                            </div>
+                        </div>
+                        <div class="input-row">
+                            <span class="input-label">时长</span>
+                            <input class="input-field" type="number" placeholder="训练时长">
+                            <span class="input-unit">分钟</span>
+                        </div>
+                    </div>
+
+                    <!-- 其他运动通用 -->
+                    <div class="exercise-detail" id="detail-other">
+                        <div class="exercise-detail-title" id="other-exercise-label">🚴 运动详情</div>
+                        <div class="input-row">
+                            <span class="input-label">时长</span>
+                            <input class="input-field" type="number" placeholder="运动时长">
+                            <span class="input-unit">分钟</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkin-card">
+                    <div class="checkin-card-title">
+                        <span class="emoji">🥗</span> 饮食记录
+                    </div>
+                    <div class="checkin-diet-tags">
+                        <span class="diet-tag active" onclick="toggleTag(this)">🍚 主食</span>
+                        <span class="diet-tag" onclick="toggleTag(this)">🥩 肉类</span>
+                        <span class="diet-tag active" onclick="toggleTag(this)">🥬 蔬菜</span>
+                        <span class="diet-tag" onclick="toggleTag(this)">🍎 水果</span>
+                        <span class="diet-tag" onclick="toggleTag(this)">🥤 饮品</span>
+                        <span class="diet-tag" onclick="toggleTag(this)">🍰 零食</span>
+                        <span class="diet-tag" onclick="toggleTag(this)">🍺 酒类</span>
+                    </div>
+                </div>
+
+                <button class="checkin-btn" onclick="doCheckin()">✨ 完成打卡</button>
+                <div class="checkin-mascot-card">
+                    <img src="mascot.png" alt="Cindy" class="checkin-mascot-img"
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="mascot-fallback" style="display:none;">
+                        🏃‍♀️<span>Cindy</span>
+                    </div>
+                    <div class="checkin-mascot-text">
+                        <div class="mascot-speech">今天也要元气满满哦！💪</div>
+                        <div class="mascot-speech-sub">坚持打卡，遇见更好的自己</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== DATA ===== -->
+            <div class="page" id="page-data">
+                <div class="data-header">
+                    <div class="data-title">📊 数据分析</div>
+                    <div class="data-tabs">
+                        <span class="data-tab active" onclick="switchDataTab(this)">体重</span>
+                        <span class="data-tab" onclick="switchDataTab(this)">体脂</span>
+                        <span class="data-tab" onclick="switchDataTab(this)">腰臀比</span>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-title">体重趋势</div>
+                    <div class="chart-subtitle">最近30天</div>
+                    <div class="weight-chart">
+                        <canvas class="chart-canvas" id="weightChart"></canvas>
+                    </div>
+                    <div class="chart-summary">
+                        <div class="chart-stat">
+                            <div class="chart-stat-value" style="color:var(--success);">-2.1</div>
+                            <div class="chart-stat-label">本月变化(kg)</div>
+                        </div>
+                        <div class="chart-stat">
+                            <div class="chart-stat-value">68.5</div>
+                            <div class="chart-stat-label">当前体重(kg)</div>
+                        </div>
+                        <div class="chart-stat">
+                            <div class="chart-stat-value">0.82</div>
+                            <div class="chart-stat-label">当前腰臀比</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="data-mascot-tip">
+                    <img src="mascot.png" alt="Cindy" class="data-mascot-img"
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="mascot-fallback" style="display:none;">
+                        🏃‍♀️<span>Cindy</span>
+                    </div>
+                    <div class="data-mascot-text">
+                        <div class="data-mascot-title">坚持记录，身体数据会说话 💜</div>
+                        <div class="data-mascot-desc">持续打卡7天，解锁腰臀比趋势分析</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ===== CALENDAR ===== -->
+            <div class="page" id="page-calendar">
+                <div class="calendar-header">
+                    <div class="calendar-title">📅 打卡日历</div>
+                    <div class="calendar-month">
+                        <div class="calendar-nav">
+                            <button class="calendar-nav-btn">‹</button>
+                        </div>
+                        <div class="calendar-month-label">2026年5月</div>
+                        <div class="calendar-nav">
+                            <button class="calendar-nav-btn">›</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="calendar-grid-card">
+                    <div class="calendar-weekdays">
+                        <span class="calendar-weekday">日</span>
+                        <span class="calendar-weekday">一</span>
+                        <span class="calendar-weekday">二</span>
+                        <span class="calendar-weekday">三</span>
+                        <span class="calendar-weekday">四</span>
+                        <span class="calendar-weekday">五</span>
+                        <span class="calendar-weekday">六</span>
+                    </div>
+                    <div class="calendar-days">
+                        <span class="cal-day empty"></span>
+                        <span class="cal-day empty"></span>
+                        <span class="cal-day empty"></span>
+                        <span class="cal-day empty"></span>
+                        <span class="cal-day empty"></span>
+                        <span class="cal-day checked">1</span>
+                        <span class="cal-day checked">2</span>
+                        <span class="cal-day checked">3</span>
+                        <span class="cal-day checked">4</span>
+                        <span class="cal-day checked">5</span>
+                        <span class="cal-day today checked">6</span>
+                        <span class="cal-day future">7</span>
+                        <span class="cal-day future">8</span>
+                        <span class="cal-day future">9</span>
+                        <span class="cal-day future">10</span>
+                        <span class="cal-day future">11</span>
+                        <span class="cal-day future">12</span>
+                        <span class="cal-day future">13</span>
+                        <span class="cal-day future">14</span>
+                        <span class="cal-day future">15</span>
+                        <span class="cal-day future">16</span>
+                        <span class="cal-day future">17</span>
+                        <span class="cal-day future">18</span>
+                        <span class="cal-day future">19</span>
+                        <span class="cal-day future">20</span>
+                        <span class="cal-day future">21</span>
+                        <span class="cal-day future">22</span>
+                        <span class="cal-day future">23</span>
+                        <span class="cal-day future">24</span>
+                        <span class="cal-day future">25</span>
+                        <span class="cal-day future">26</span>
+                        <span class="cal-day future">27</span>
+                        <span class="cal-day future">28</span>
+                        <span class="cal-day future">29</span>
+                        <span class="cal-day future">30</span>
+                        <span class="cal-day future">31</span>
+                    </div>
+                </div>
+
+                <div class="streak-card">
+                    <span class="streak-fire">🔥</span>
+                    <div class="streak-info">
+                        <div class="streak-number">5 天</div>
+                        <div class="streak-label">连续打卡</div>
+                        <div class="streak-record">🏆 最长连续 21 天</div>
+                    </div>
+                </div>
+
+                <div class="badges-section">
+                    <div class="badges-title">🎖️ 成就徽章</div>
+                    <div class="badges-grid">
+                        <div class="badge-item">
+                            <div class="badge-icon earned">🌱</div>
+                            <div class="badge-name">初心者</div>
+                        </div>
+                        <div class="badge-item">
+                            <div class="badge-icon earned">🔥</div>
+                            <div class="badge-name">7天坚持</div>
+                        </div>
+                        <div class="badge-item">
+                            <div class="badge-icon earned">⚡</div>
+                            <div class="badge-name">运动达人</div>
+                        </div>
+                        <div class="badge-item">
+                            <div class="badge-icon locked">🏅</div>
+                            <div class="badge-name locked">21天蜕变</div>
+                        </div>
+                        <div class="badge-item">
+                            <div class="badge-icon locked">💎</div>
+                            <div class="badge-name locked">30天传说</div>
+                        </div>
+                        <div class="badge-item">
+                            <div class="badge-icon locked">🎯</div>
+                            <div class="badge-name locked">达成目标</div>
+                        </div>
+                        <div class="badge-item">
+                            <div class="badge-icon locked">👑</div>
+                            <div class="badge-name locked">自律王者</div>
+                        </div>
+                        <div class="badge-item">
+                            <div class="badge-icon locked">🌟</div>
+                            <div class="badge-name locked">年度之星</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== PROFILE ===== -->
+            <div class="page" id="page-profile">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                    <img src="mascot.png" alt="Cindy" style="width:56px;height:56px;object-fit:contain;border-radius:50%;"
+                         onerror="this.outerHTML='🧑';">
+                </div>
+                    <div class="profile-name">星辰</div>
+                    <div class="profile-join">已坚持 42 天</div>
+                    <div class="profile-stats">
+                        <div>
+                            <div class="profile-stat-value">42</div>
+                            <div class="profile-stat-label">总打卡</div>
+                        </div>
+                        <div>
+                            <div class="profile-stat-value">-4.2</div>
+                            <div class="profile-stat-label">减重(kg)</div>
+                        </div>
+                        <div>
+                            <div class="profile-stat-value">21</div>
+                            <div class="profile-stat-label">最长连续</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-menu">
+                    <div class="menu-item">
+                        <div class="menu-icon" style="background:#FFF3E0;">🎯</div>
+                        <div class="menu-info">
+                            <div class="menu-title">目标设置</div>
+                            <div class="menu-desc">设定目标体重和体脂率</div>
+                        </div>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon" style="background:#E3F2FD;">⏰</div>
+                        <div class="menu-info">
+                            <div class="menu-title">打卡提醒</div>
+                            <div class="menu-desc">每天 08:00 提醒打卡</div>
+                        </div>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon" style="background:#E8F8F5;">📝</div>
+                        <div class="menu-info">
+                            <div class="menu-title">文案收藏</div>
+                            <div class="menu-desc">收藏喜欢的正能量文案</div>
+                        </div>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon" style="background:#F5EEF8;">📱</div>
+                        <div class="menu-info">
+                            <div class="menu-title">数据导出</div>
+                            <div class="menu-desc">导出健康数据报告</div>
+                        </div>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon" style="background:#FDEDEC;">⚙️</div>
+                        <div class="menu-info">
+                            <div class="menu-title">设置</div>
+                            <div class="menu-desc">个人信息、隐私、通知</div>
+                        </div>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Bar -->
+        <div class="tab-bar">
+            <div class="tab-item active" onclick="switchTab('home')">
+                <span class="tab-icon">🏠</span>
+                <span class="tab-label">首页</span>
+            </div>
+            <div class="tab-item" onclick="switchTab('data')">
+                <span class="tab-icon">📊</span>
+                <span class="tab-label">数据</span>
+            </div>
+            <div class="tab-item" onclick="switchTab('checkin')">
+                <div class="tab-center">
+                    <span class="tab-icon">✏️</span>
+                </div>
+                <span class="tab-label">打卡</span>
+            </div>
+            <div class="tab-item" onclick="switchTab('calendar')">
+                <span class="tab-icon">📅</span>
+                <span class="tab-label">日历</span>
+            </div>
+            <div class="tab-item" onclick="switchTab('profile')">
+                <span class="tab-icon">👤</span>
+                <span class="tab-label">我的</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        function switchTab(name) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            document.getElementById('page-' + name).classList.add('active');
+            event.currentTarget.classList.add('active');
+            // Scroll to top
+            document.getElementById('page-' + name).scrollTop = 0;
+        }
+
+        // Checkin tag toggle (for diet tags)
+        function toggleTag(el) {
+            el.classList.toggle('active');
+        }
+
+        // Exercise type selection
+        function selectExercise(el) {
+            const tags = document.querySelectorAll('#exercise-tags .checkin-tag');
+            tags.forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+
+            const type = el.getAttribute('data-type');
+            // Hide all detail panels
+            document.querySelectorAll('.exercise-detail').forEach(d => d.classList.remove('show'));
+
+            if (type === 'running') {
+                document.getElementById('detail-running').classList.add('show');
+            } else if (type === 'strength') {
+                document.getElementById('detail-strength').classList.add('show');
+            } else {
+                // Cycling, swimming, yoga, walking - use generic panel
+                const labels = {
+                    cycling: '🚴 骑行详情',
+                    swimming: '🏊 游泳详情',
+                    yoga: '🧘 瑜伽详情',
+                    walking: '🚶 步行详情'
+                };
+                document.getElementById('other-exercise-label').textContent = labels[type] || '运动详情';
+                document.getElementById('detail-other').classList.add('show');
+            }
+        }
+
+        // Strength body-part selection
+        function selectPart(el) {
+            document.querySelectorAll('.strength-part').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        // Calculate Waist-to-Hip Ratio
+        function calcWHR() {
+            const waist = parseFloat(document.getElementById('input-waist').value);
+            const hip = parseFloat(document.getElementById('input-hip').value);
+            const resultDiv = document.getElementById('whr-result');
+            const valueSpan = document.getElementById('whr-value');
+            const statusSpan = document.getElementById('whr-status');
+
+            if (waist > 0 && hip > 0) {
+                const whr = waist / hip;
+                resultDiv.style.display = 'flex';
+                valueSpan.textContent = whr.toFixed(2);
+
+                // Evaluate WHR
+                statusSpan.classList.remove('good', 'warn', 'bad');
+                if (whr < 0.80) {
+                    statusSpan.textContent = '非常好';
+                    statusSpan.classList.add('good');
+                } else if (whr < 0.85) {
+                    statusSpan.textContent = '正常范围';
+                    statusSpan.classList.add('good');
+                } else if (whr < 0.90) {
+                    statusSpan.textContent = '偏高注意';
+                    statusSpan.classList.add('warn');
+                } else {
+                    statusSpan.textContent = '建议改善';
+                    statusSpan.classList.add('bad');
+                }
+            } else {
+                resultDiv.style.display = 'none';
+            }
+        }
+
+        // Data tab switch
+        function switchDataTab(el) {
+            document.querySelectorAll('.data-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        // Checkin action
+        function doCheckin() {
+            const btn = event.currentTarget;
+            btn.textContent = '🎉 打卡成功！';
+            btn.style.background = 'linear-gradient(135deg, #00B894 0%, #55EFC4 100%)';
+            // Refresh quote
+            const quotes = [
+                { text: '自律给你自由。今天的坚持，是明天的底气。', author: '— 康德' },
+                { text: '千里之行，始于足下。每一步都算数。', author: '— 老子' },
+                { text: '你不必很厉害才能开始，但你需要开始才能很厉害。', author: '— Zig Ziglar' },
+                { text: '成功不是终点，失败也不是末日，重要的是继续前行的勇气。', author: '— 丘吉尔' },
+                { text: '种一棵树最好的时间是十年前，其次是现在。', author: '— 非洲谚语' },
+                { text: '少即是多。掌控身体，才能掌控人生。', author: '— 极简主义' },
+            ];
+            const q = quotes[Math.floor(Math.random() * quotes.length)];
+            document.querySelector('#checkin-quote .checkin-note-text').textContent = '"' + q.text + '"';
+            document.querySelector('#checkin-quote .checkin-note-author').textContent = q.author;
+        }
+
+        // Draw weight chart
+        function drawChart() {
+            const canvas = document.getElementById('weightChart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
+            ctx.scale(dpr, dpr);
+
+            const w = rect.width;
+            const h = rect.height;
+            const data = [72.1,71.8,71.5,71.9,71.3,70.8,70.5,70.2,70.6,70.1,69.8,69.5,69.2,69.6,69.1,68.8,69.0,68.5,68.7,68.3,68.5,68.2,68.5,68.5];
+            const minV = Math.min(...data) - 1;
+            const maxV = Math.max(...data) + 1;
+            const pad = { top: 10, bottom: 20, left: 5, right: 5 };
+            const cw = w - pad.left - pad.right;
+            const ch = h - pad.top - pad.bottom;
+
+            // Draw gradient fill
+            const gradient = ctx.createLinearGradient(0, pad.top, 0, h - pad.bottom);
+            gradient.addColorStop(0, 'rgba(108,92,231,0.2)');
+            gradient.addColorStop(1, 'rgba(108,92,231,0)');
+            ctx.beginPath();
+            data.forEach((v, i) => {
+                const x = pad.left + (i / (data.length - 1)) * cw;
+                const y = pad.top + (1 - (v - minV) / (maxV - minV)) * ch;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.lineTo(pad.left + cw, h - pad.bottom);
+            ctx.lineTo(pad.left, h - pad.bottom);
+            ctx.closePath();
+            ctx.fillStyle = gradient;
+            ctx.fill();
+
+            // Draw line
+            ctx.beginPath();
+            data.forEach((v, i) => {
+                const x = pad.left + (i / (data.length - 1)) * cw;
+                const y = pad.top + (1 - (v - minV) / (maxV - minV)) * ch;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.strokeStyle = '#6C5CE7';
+            ctx.lineWidth = 2.5;
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+
+            // Draw dots for key points
+            [0, 6, 11, 17, data.length - 1].forEach(i => {
+                if (i >= data.length) return;
+                const x = pad.left + (i / (data.length - 1)) * cw;
+                const y = pad.top + (1 - (data[i] - minV) / (maxV - minV)) * ch;
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = '#6C5CE7';
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(x, y, 2, 0, Math.PI * 2);
+                ctx.fillStyle = 'white';
+                ctx.fill();
+            });
+
+            // Draw target line
+            const targetY = pad.top + (1 - (65 - minV) / (maxV - minV)) * ch;
+            ctx.beginPath();
+            ctx.setLineDash([4, 4]);
+            ctx.moveTo(pad.left, targetY);
+            ctx.lineTo(w - pad.right, targetY);
+            ctx.strokeStyle = '#E17055';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.font = '10px sans-serif';
+            ctx.fillStyle = '#E17055';
+            ctx.fillText('目标 65kg', w - pad.right - 50, targetY - 6);
+        }
+
+        // Init
+        setTimeout(drawChart, 100);
+        window.addEventListener('resize', drawChart);
+    </script>
+</body>
+</html>
