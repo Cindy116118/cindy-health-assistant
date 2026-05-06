@@ -1103,6 +1103,203 @@
             font-size: 13px;
             cursor: pointer;
         }
+
+        /* ===== BADGE POSTER MODAL ===== */
+        .badge-poster-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        .badge-poster-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+        }
+        .badge-poster-container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            width: 90%;
+            max-width: 360px;
+            animation: slideUp 0.3s ease;
+        }
+        .badge-poster-card {
+            width: 100%;
+            background: linear-gradient(160deg, #FFD700 0%, #FFA500 40%, #FF8C00 100%);
+            border-radius: 28px;
+            padding: 28px 20px 20px;
+            color: white;
+            box-shadow: 0 20px 60px rgba(255,165,0,0.4);
+            text-align: center;
+        }
+        .badge-poster-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .badge-poster-brand {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .badge-poster-brand-icon {
+            font-size: 18px;
+            width: 30px; height: 30px;
+            background: rgba(255,255,255,0.25);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .badge-poster-brand-name {
+            font-size: 12px;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+        .badge-poster-date {
+            font-size: 11px;
+            opacity: 0.75;
+        }
+        .badge-poster-congrats {
+            font-size: 13px;
+            opacity: 0.85;
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+        }
+        .badge-poster-icon {
+            font-size: 72px;
+            margin: 12px 0 16px;
+            filter: drop-shadow(0 8px 24px rgba(0,0,0,0.2));
+            animation: badgeBounce 0.6s ease;
+        }
+        @keyframes badgeBounce {
+            0% { transform: scale(0.3) rotate(-15deg); opacity: 0; }
+            60% { transform: scale(1.15) rotate(5deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .badge-poster-name {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .badge-poster-desc {
+            font-size: 13px;
+            opacity: 0.85;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .badge-poster-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.3);
+            margin: 4px 0 16px;
+        }
+        .badge-poster-stats {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .badge-poster-stat {
+            flex: 1;
+            background: rgba(255,255,255,0.2);
+            border-radius: 14px;
+            padding: 10px 6px;
+            text-align: center;
+        }
+        .badge-poster-stat-value {
+            font-size: 18px;
+            font-weight: 800;
+        }
+        .badge-poster-stat-label {
+            font-size: 10px;
+            opacity: 0.75;
+            margin-top: 2px;
+        }
+        .badge-poster-quote {
+            background: rgba(255,255,255,0.15);
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-bottom: 16px;
+            border-left: 3px solid rgba(255,255,255,0.6);
+            text-align: left;
+        }
+        .badge-poster-quote-text {
+            font-size: 12px;
+            font-style: italic;
+            opacity: 0.95;
+        }
+        .badge-poster-quote-author {
+            font-size: 10px;
+            opacity: 0.65;
+            margin-top: 4px;
+        }
+        .badge-poster-footer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .badge-poster-qr {
+            width: 52px; height: 52px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #FF8C00;
+            flex-shrink: 0;
+        }
+        .badge-poster-qr-icon { font-size: 16px; }
+        .badge-poster-qr-text { font-size: 8px; text-align: center; line-height: 1.1; }
+        .badge-poster-footer-text {
+            flex: 1;
+            font-size: 11px;
+            opacity: 0.75;
+            line-height: 1.5;
+            text-align: left;
+        }
+        .badge-poster-actions {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+        .badge-poster-btn {
+            flex: 1;
+            padding: 14px 16px;
+            border-radius: 50px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .badge-poster-btn:active { transform: scale(0.96); }
+        .badge-poster-btn-save {
+            background: white;
+            color: #FF8C00;
+        }
+        .badge-poster-btn-share {
+            background: rgba(255,255,255,0.25);
+            color: white;
+            border: 1.5px solid rgba(255,255,255,0.5);
+        }
+        .badge-poster-close {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 32px;
+            border-radius: 50px;
+            font-size: 13px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -1427,15 +1624,15 @@
                     <div class="badges-title">🎖️ 成就徽章</div>
                     <div class="badges-grid">
                         <div class="badge-item">
-                            <div class="badge-icon earned">🌱</div>
+                            <div class="badge-icon earned" onclick="showBadgePoster('🌱', '初心者', '完成首次打卡')">🌱</div>
                             <div class="badge-name">初心者</div>
                         </div>
                         <div class="badge-item">
-                            <div class="badge-icon earned">🔥</div>
+                            <div class="badge-icon earned" onclick="showBadgePoster('🔥', '7天坚持', '连续打卡满7天')">🔥</div>
                             <div class="badge-name">7天坚持</div>
                         </div>
                         <div class="badge-item">
-                            <div class="badge-icon earned">⚡</div>
+                            <div class="badge-icon earned" onclick="showBadgePoster('⚡', '运动达人', '累计运动打卡30次')">⚡</div>
                             <div class="badge-name">运动达人</div>
                         </div>
                         <div class="badge-item">
@@ -1781,6 +1978,41 @@
         function savePoster() {
             alert('正在保存海报到相册...');
         }
+
+        // ===== BADGE POSTER =====
+        function showBadgePoster(icon, name, desc) {
+            document.getElementById('badge-poster-icon').textContent = icon;
+            document.getElementById('badge-poster-name').textContent = name;
+            document.getElementById('badge-poster-desc').textContent = desc;
+            // Random quote
+            const quotes = [
+                { text: '每一次进步，都值得被看见。', author: '— 老子' },
+                { text: '千里之行，始于足下。', author: '— 老子' },
+                { text: '自律给我自由。', author: '— 康德' },
+                { text: '你比自己想象的更强大。', author: '— 佚名' },
+            ];
+            const q = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('badge-poster-quote-text').textContent = q.text;
+            document.getElementById('badge-poster-quote-author').textContent = q.author;
+            // Show modal
+            document.getElementById('badge-poster-modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeBadgePoster() {
+            document.getElementById('badge-poster-modal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        function shareBadgePoster() {
+            closeBadgePoster();
+            const badgeName = document.getElementById('badge-poster-name').textContent;
+            alert('已生成徽章海报到相册，可前往微信朋友圈分享！\n标题：Cindy辛迪健康助手 · 获得「' + badgeName + '」徽章');
+        }
+
+        function saveBadgePoster() {
+            alert('正在保存徽章海报到相册...');
+        }
     </script>
 
     <!-- ===== SHARE POSTER MODAL ===== -->
@@ -1853,6 +2085,63 @@
                 </button>
             </div>
             <button class="poster-close" onclick="closePoster()">✕ 关闭</button>
+        </div>
+    </div>
+
+    <!-- ===== BADGE POSTER MODAL ===== -->
+    <div id="badge-poster-modal" class="badge-poster-modal">
+        <div class="badge-poster-overlay" onclick="closeBadgePoster()"></div>
+        <div class="badge-poster-container">
+            <div class="badge-poster-card">
+                <div class="badge-poster-header">
+                    <div class="badge-poster-brand">
+                        <div class="badge-poster-brand-icon">💜</div>
+                        <div class="badge-poster-brand-name">Cindy辛迪健康助手</div>
+                    </div>
+                    <div class="badge-poster-date" id="badge-poster-date">2026年5月6日</div>
+                </div>
+                <div class="badge-poster-congrats">🎉 获得新徽章 🎉</div>
+                <div class="badge-poster-icon" id="badge-poster-icon">🌱</div>
+                <div class="badge-poster-name" id="badge-poster-name">初心者</div>
+                <div class="badge-poster-desc" id="badge-poster-desc">完成首次打卡</div>
+                <div class="badge-poster-divider"></div>
+                <div class="badge-poster-stats">
+                    <div class="badge-poster-stat">
+                        <div class="badge-poster-stat-value" id="badge-stat-days">42</div>
+                        <div class="badge-poster-stat-label">坚持天数</div>
+                    </div>
+                    <div class="badge-poster-stat">
+                        <div class="badge-poster-stat-value" id="badge-stat-lost">4.2</div>
+                        <div class="badge-poster-stat-label">减重(kg)</div>
+                    </div>
+                    <div class="badge-poster-stat">
+                        <div class="badge-poster-stat-value" id="badge-stat-streak">7</div>
+                        <div class="badge-poster-stat-label">连续打卡</div>
+                    </div>
+                </div>
+                <div class="badge-poster-quote">
+                    <div class="badge-poster-quote-text" id="badge-poster-quote-text">千里之行，始于足下。</div>
+                    <div class="badge-poster-quote-author" id="badge-poster-quote-author">— 老子</div>
+                </div>
+                <div class="badge-poster-footer">
+                    <div class="badge-poster-qr">
+                        <div class="badge-poster-qr-icon">⊹</div>
+                        <div class="badge-poster-qr-text">扫码<br>使用</div>
+                    </div>
+                    <div class="badge-poster-footer-text">
+                        记录身体数据<br>遇见更好的自己
+                    </div>
+                </div>
+            </div>
+            <div class="badge-poster-actions">
+                <button class="badge-poster-btn badge-poster-btn-save" onclick="saveBadgePoster()">
+                    📥 保存到相册
+                </button>
+                <button class="badge-poster-btn badge-poster-btn-share" onclick="shareBadgePoster()">
+                    🌟 分享到朋友圈
+                </button>
+            </div>
+            <button class="badge-poster-close" onclick="closeBadgePoster()">✕ 关闭</button>
         </div>
     </div>
 </body>
