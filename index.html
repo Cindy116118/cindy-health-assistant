@@ -1355,32 +1355,37 @@
         }
         /* Poster metric selector */
         .poster-metric-selector {
-            background: rgba(255,255,255,0.12);
+            background: white;
             border-radius: 14px;
             padding: 12px 14px;
             margin-bottom: 12px;
+            width: 100%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
         .pms-title {
-            font-size: 11px;
-            opacity: 0.8;
+            font-size: 12px;
+            color: var(--text-light);
             margin-bottom: 8px;
             text-align: center;
         }
         .pms-options {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 8px;
             justify-content: center;
         }
         .pms-option {
-            font-size: 12px;
+            font-size: 13px;
             display: flex;
             align-items: center;
             gap: 4px;
             cursor: pointer;
-            opacity: 0.9;
+            color: var(--text);
+            padding: 4px 8px;
+            border-radius: 8px;
+            background: #F5F5FA;
         }
-        .pms-option input { accent-color: white; }
+        .pms-option input { accent-color: var(--primary); }
 
         /* ===== BADGE POSTER MODAL ===== */
         .badge-poster-modal {
@@ -1602,7 +1607,27 @@
                 </div>
 
                 <div class="home-stats" id="home-stats">
-                    <!-- 动态渲染3个自选指标 -->
+                    <div class="home-stat-card" id="stat-card-0">
+                        <div class="stat-icon">⚖️</div>
+                        <div class="stat-value" id="stat-val-0">65.3</div>
+                        <div class="stat-unit" id="stat-unit-0">kg</div>
+                        <div class="stat-label" id="stat-label-0">今日体重</div>
+                        <div class="stat-change down" id="stat-change-0">↓ 8.8 本周</div>
+                    </div>
+                    <div class="home-stat-card" id="stat-card-1">
+                        <div class="stat-icon" id="stat-icon-1">🔥</div>
+                        <div class="stat-value" id="stat-val-1">18.1</div>
+                        <div class="stat-unit" id="stat-unit-1">%</div>
+                        <div class="stat-label" id="stat-label-1">体脂率</div>
+                        <div class="stat-change down" id="stat-change-1">↓ 7.7 本周</div>
+                    </div>
+                    <div class="home-stat-card" id="stat-card-2">
+                        <div class="stat-icon" id="stat-icon-2">🏃</div>
+                        <div class="stat-value" id="stat-val-2">18</div>
+                        <div class="stat-unit" id="stat-unit-2">min</div>
+                        <div class="stat-label" id="stat-label-2">运动时长</div>
+                        <div class="stat-change down" id="stat-change-2">↑ 18 本周</div>
+                    </div>
                 </div>
                 <div class="home-stats-edit" onclick="showCoreSelector()">
                     <span>⚙️ 选择展示指标（3/4）</span>
@@ -1617,7 +1642,9 @@
                         <div class="goal-fill"></div>
                     </div>
                     <div class="goal-info" id="goal-info">
-                        <!-- 动态渲染目标值 -->
+                        <span>今日体重 65.3kg / 目标 65kg</span>
+                        <span>体脂率 18.1% / 目标 15%</span>
+                        <span>运动时长 18min / 目标 60min</span>
                     </div>
                 </div>
 
@@ -2290,20 +2317,16 @@
         let goalValues = { weight: 65, bodyfat: 15, whr: 0.80, exercise: 60 };
 
         function renderHomeStats() {
-            const container = document.getElementById('home-stats');
-            container.innerHTML = '';
-            selectedMetrics.forEach(key => {
+            // Update the 3 stat cards
+            selectedMetrics.forEach((key, idx) => {
                 const m = ALL_METRICS[key];
-                const card = document.createElement('div');
-                card.className = 'home-stat-card';
-                card.innerHTML = `
-                    <div class="stat-icon">${m.icon}</div>
-                    <div class="stat-value">${m.value}</div>
-                    <div class="stat-unit">${m.unit}</div>
-                    <div class="stat-label">${m.name}</div>
-                    <div class="stat-change down">${m.change} 本周</div>
-                `;
-                container.appendChild(card);
+                const card = document.getElementById('stat-card-' + idx);
+                if (!card) return;
+                card.querySelector('.stat-icon').textContent = m.icon;
+                card.querySelector('.stat-value').textContent = m.value;
+                card.querySelector('.stat-unit').textContent = m.unit;
+                card.querySelector('.stat-label').textContent = m.name;
+                card.querySelector('.stat-change').textContent = m.change + ' 本周';
             });
             // Update goal info
             const goalContainer = document.getElementById('goal-info');
@@ -2501,6 +2524,17 @@
     <div id="poster-modal" class="poster-modal">
         <div class="poster-overlay" onclick="closePoster()"></div>
         <div class="poster-container">
+            <!-- Metric Selector (outside poster card) -->
+            <div class="poster-metric-selector" id="poster-metric-selector">
+                <div class="pms-title">选择海报展示指标（1-3个）</div>
+                <div class="pms-options">
+                    <label class="pms-option"><input type="checkbox" value="weight" checked onchange="updatePosterMetrics()"> ⚖️ 体重</label>
+                    <label class="pms-option"><input type="checkbox" value="bodyfat" checked onchange="updatePosterMetrics()"> 🔥 体脂率</label>
+                    <label class="pms-option"><input type="checkbox" value="whr" onchange="updatePosterMetrics()"> 📏 腰臀比</label>
+                    <label class="pms-option"><input type="checkbox" value="exercise" checked onchange="updatePosterMetrics()"> 🏃 运动时长</label>
+                </div>
+            </div>
+
             <!-- Poster Preview -->
             <div class="poster-card">
                 <!-- Poster Header -->
@@ -2515,17 +2549,9 @@
                 <div class="poster-title">✨ 今日打卡完成 ✨</div>
                 <!-- Stats Grid (动态渲染) -->
                 <div class="poster-stats" id="poster-stats-grid">
-                    <!-- JS动态填充 -->
-                </div>
-                <!-- Metric Selector for Poster -->
-                <div class="poster-metric-selector" id="poster-metric-selector">
-                    <div class="pms-title">选择海报展示指标（1-3个）</div>
-                    <div class="pms-options">
-                        <label class="pms-option"><input type="checkbox" value="weight" checked onchange="updatePosterMetrics()"> ⚖️ 体重</label>
-                        <label class="pms-option"><input type="checkbox" value="bodyfat" checked onchange="updatePosterMetrics()"> 🔥 体脂率</label>
-                        <label class="pms-option"><input type="checkbox" value="whr" onchange="updatePosterMetrics()"> 📏 腰臀比</label>
-                        <label class="pms-option"><input type="checkbox" value="exercise" checked onchange="updatePosterMetrics()"> 🏃 运动时长</label>
-                    </div>
+                    <div class="poster-stat"><div class="poster-stat-value">65.3</div><div class="poster-stat-label">今日体重(kg)</div></div>
+                    <div class="poster-stat"><div class="poster-stat-value">18.1</div><div class="poster-stat-label">体脂率(%)</div></div>
+                    <div class="poster-stat"><div class="poster-stat-value">18</div><div class="poster-stat-label">运动时长(min)</div></div>
                 </div>
                 <!-- Divider -->
                 <div class="poster-divider"></div>
