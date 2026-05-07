@@ -900,6 +900,160 @@
         .menu-desc { font-size: 11px; color: var(--text-light); margin-top: 2px; }
         .menu-arrow { color: var(--text-light); font-size: 14px; }
 
+        /* ===== CORE SELECTOR & GOAL SETTING ===== */
+        .home-stats-edit {
+            text-align: center;
+            padding: 8px 16px;
+            margin-top: 6px;
+            font-size: 12px;
+            color: var(--primary);
+            cursor: pointer;
+        }
+        .home-stats-edit:active { opacity: 0.7; }
+
+        /* Selector Modal */
+        .selector-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 9999;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .selector-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+        .selector-sheet {
+            position: relative;
+            z-index: 1;
+            background: white;
+            border-radius: 24px 24px 0 0;
+            padding: 20px 16px 28px;
+            width: 100%;
+            max-width: 430px;
+            animation: slideUpSheet 0.3s ease;
+        }
+        @keyframes slideUpSheet {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .selector-title {
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+        .selector-subtitle {
+            font-size: 12px;
+            color: var(--text-light);
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .selector-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .selector-option {
+            border: 2px solid #E8E8F0;
+            border-radius: 16px;
+            padding: 14px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .selector-option.selected {
+            border-color: var(--primary);
+            background: rgba(108,92,231,0.06);
+        }
+        .selector-option .opt-icon { font-size: 28px; margin-bottom: 4px; }
+        .selector-option .opt-name { font-size: 13px; font-weight: 600; color: var(--text); }
+        .selector-option .opt-unit { font-size: 11px; color: var(--text-light); }
+        .selector-option .opt-check {
+            position: absolute;
+            top: 6px; right: 6px;
+            width: 20px; height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            color: white;
+            font-size: 12px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .selector-option.selected .opt-check { display: flex; }
+        .selector-hint {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+        .selector-hint.warning { color: #E74C3C; }
+        .selector-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 50px;
+            border: none;
+            background: var(--gradient);
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .selector-btn:disabled {
+            background: #D0D0E0;
+            cursor: not-allowed;
+        }
+
+        /* Goal Setting Modal */
+        .goal-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 9999;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .goal-sheet {
+            position: relative;
+            z-index: 1;
+            background: white;
+            border-radius: 24px 24px 0 0;
+            padding: 20px 16px 28px;
+            width: 100%;
+            max-width: 430px;
+            animation: slideUpSheet 0.3s ease;
+        }
+        .goal-input-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid #F0F0F5;
+        }
+        .goal-input-icon { font-size: 22px; width: 36px; text-align: center; }
+        .goal-input-info { flex: 1; }
+        .goal-input-name { font-size: 14px; font-weight: 500; }
+        .goal-input-desc { font-size: 11px; color: var(--text-light); }
+        .goal-input-field {
+            width: 80px;
+            padding: 8px 10px;
+            border: 1.5px solid #E8E8F0;
+            border-radius: 10px;
+            font-size: 14px;
+            text-align: center;
+            outline: none;
+        }
+        .goal-input-field:focus { border-color: var(--primary); }
+        .goal-input-unit { font-size: 12px; color: var(--text-light); width: 30px; }
+
         /* ===== SHARE POSTER MODAL ===== */
         .poster-modal {
             display: none;
@@ -1103,6 +1257,34 @@
             font-size: 13px;
             cursor: pointer;
         }
+        /* Poster metric selector */
+        .poster-metric-selector {
+            background: rgba(255,255,255,0.12);
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-bottom: 12px;
+        }
+        .pms-title {
+            font-size: 11px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .pms-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+        }
+        .pms-option {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            opacity: 0.9;
+        }
+        .pms-option input { accent-color: white; }
 
         /* ===== BADGE POSTER MODAL ===== */
         .badge-poster-modal {
@@ -1323,42 +1505,23 @@
                     <div class="home-quote-author">— 荀子《劝学》</div>
                 </div>
 
-                <div class="home-stats">
-                    <div class="home-stat-card">
-                        <div class="stat-icon">⚖️</div>
-                        <div class="stat-value">68.5</div>
-                        <div class="stat-unit">kg</div>
-                        <div class="stat-label">今日体重</div>
-                        <div class="stat-change down">↓ 0.3 本周</div>
-                    </div>
-                    <div class="home-stat-card">
-                        <div class="stat-icon">🔥</div>
-                        <div class="stat-value">18.5</div>
-                        <div class="stat-unit">%</div>
-                        <div class="stat-label">体脂率</div>
-                        <div class="stat-change down">↓ 0.2 本周</div>
-                    </div>
-                    <div class="home-stat-card">
-                        <div class="stat-icon">📏</div>
-                        <div class="stat-value">0.82</div>
-                        <div class="stat-unit"></div>
-                        <div class="stat-label">腰臀比</div>
-                        <div class="stat-change down">↓ 0.01 本周</div>
-                    </div>
+                <div class="home-stats" id="home-stats">
+                    <!-- 动态渲染3个自选指标 -->
+                </div>
+                <div class="home-stats-edit" onclick="showCoreSelector()">
+                    <span>⚙️ 选择展示指标（3/4）</span>
                 </div>
 
                 <div class="home-goal">
                     <div class="goal-header">
                         <div class="goal-title">🎯 今日目标</div>
-                        <div class="goal-edit">编辑</div>
+                        <div class="goal-edit" onclick="showGoalSetting()">编辑</div>
                     </div>
                     <div class="goal-bar">
                         <div class="goal-fill"></div>
                     </div>
-                    <div class="goal-info">
-                        <span class="goal-current">体重 68.5 kg</span>
-                        <span>体脂 18.5%</span>
-                        <span>WHR 0.82</span>
+                    <div class="goal-info" id="goal-info">
+                        <!-- 动态渲染目标值 -->
                     </div>
                 </div>
 
@@ -1923,9 +2086,112 @@
             ctx.fillText('目标 65kg', w - pad.right - 50, targetY - 6);
         }
 
+        // ===== CORE METRICS DATA =====
+        const ALL_METRICS = {
+            weight:  { icon: '⚖️', name: '今日体重', unit: 'kg',    value: 68.5,  change: '↓ 0.3',  goal: 65 },
+            bodyfat: { icon: '🔥', name: '体脂率',   unit: '%',     value: 18.5,  change: '↓ 0.2',  goal: 15 },
+            whr:     { icon: '📏', name: '腰臀比',   unit: '',      value: 0.82,  change: '↓ 0.01', goal: 0.80 },
+            exercise:{ icon: '🏃', name: '运动时长', unit: 'min',   value: 45,    change: '↑ 10',   goal: 60 },
+        };
+        let selectedMetrics = ['weight', 'bodyfat', 'exercise']; // 默认展示3个
+        let goalValues = { weight: 65, bodyfat: 15, whr: 0.80, exercise: 60 };
+
+        function renderHomeStats() {
+            const container = document.getElementById('home-stats');
+            container.innerHTML = '';
+            selectedMetrics.forEach(key => {
+                const m = ALL_METRICS[key];
+                const card = document.createElement('div');
+                card.className = 'home-stat-card';
+                card.innerHTML = `
+                    <div class="stat-icon">${m.icon}</div>
+                    <div class="stat-value">${m.value}</div>
+                    <div class="stat-unit">${m.unit}</div>
+                    <div class="stat-label">${m.name}</div>
+                    <div class="stat-change down">${m.change} 本周</div>
+                `;
+                container.appendChild(card);
+            });
+            // Update goal info
+            const goalContainer = document.getElementById('goal-info');
+            goalContainer.innerHTML = selectedMetrics.map(key => {
+                const m = ALL_METRICS[key];
+                const g = goalValues[key];
+                return `<span>${m.name} ${m.value}${m.unit} / 目标 ${g}${m.unit}</span>`;
+            }).join('');
+        }
+
+        // ===== CORE SELECTOR =====
+        function showCoreSelector() {
+            document.getElementById('core-selector-modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            updateSelectorUI();
+        }
+        function closeCoreSelector() {
+            document.getElementById('core-selector-modal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+        function toggleCoreMetric(el) {
+            const key = el.dataset.key;
+            const isSelected = el.classList.contains('selected');
+            if (isSelected) {
+                if (selectedMetrics.length <= 1) {
+                    alert('至少选择1个指标');
+                    return;
+                }
+                el.classList.remove('selected');
+                selectedMetrics = selectedMetrics.filter(k => k !== key);
+            } else {
+                if (selectedMetrics.length >= 3) {
+                    alert('最多选择3个指标，请先取消一个');
+                    return;
+                }
+                el.classList.add('selected');
+                selectedMetrics.push(key);
+            }
+            updateSelectorUI();
+        }
+        function updateSelectorUI() {
+            document.querySelectorAll('#core-options .selector-option').forEach(opt => {
+                opt.classList.toggle('selected', selectedMetrics.includes(opt.dataset.key));
+            });
+            const hint = document.getElementById('selector-hint');
+            hint.textContent = `已选择 ${selectedMetrics.length}/3 个指标`;
+            hint.classList.toggle('warning', selectedMetrics.length !== 3);
+            document.getElementById('selector-confirm').disabled = selectedMetrics.length === 0;
+        }
+        function confirmCoreSelection() {
+            closeCoreSelector();
+            renderHomeStats();
+        }
+
+        // ===== GOAL SETTING =====
+        function showGoalSetting() {
+            document.getElementById('goal-modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            document.getElementById('goal-weight').value = goalValues.weight;
+            document.getElementById('goal-bodyfat').value = goalValues.bodyfat;
+            document.getElementById('goal-whr').value = goalValues.whr;
+            document.getElementById('goal-exercise').value = goalValues.exercise;
+        }
+        function closeGoalSetting() {
+            document.getElementById('goal-modal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+        function saveGoals() {
+            goalValues.weight = parseFloat(document.getElementById('goal-weight').value) || 65;
+            goalValues.bodyfat = parseFloat(document.getElementById('goal-bodyfat').value) || 15;
+            goalValues.whr = parseFloat(document.getElementById('goal-whr').value) || 0.80;
+            goalValues.exercise = parseFloat(document.getElementById('goal-exercise').value) || 60;
+            closeGoalSetting();
+            renderHomeStats();
+            alert('目标已保存！');
+        }
+
         // Init
         setTimeout(drawChart, 100);
         window.addEventListener('resize', drawChart);
+        renderHomeStats();
 
         // ===== SHARE POSTER =====
         function doCheckin() {
@@ -1953,6 +2219,8 @@
             const modal = document.getElementById('poster-modal');
             modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
+            // Render poster metrics
+            updatePosterMetrics();
             // Random motivational quote for poster
             const quotes = [
                 { text: '自律给我自由。', author: '— 康德' },
@@ -1963,6 +2231,27 @@
             const q = quotes[Math.floor(Math.random() * quotes.length)];
             document.getElementById('poster-quote-text').textContent = q.text;
             document.getElementById('poster-quote-author').textContent = q.author;
+        }
+
+        function updatePosterMetrics() {
+            const checkboxes = document.querySelectorAll('#poster-metric-selector input[type="checkbox"]:checked');
+            const selected = Array.from(checkboxes).map(cb => cb.value);
+            const grid = document.getElementById('poster-stats-grid');
+            grid.innerHTML = '';
+            if (selected.length === 0) {
+                grid.innerHTML = '<div style="text-align:center;font-size:12px;opacity:0.7;padding:8px;">请至少选择1个指标</div>';
+                return;
+            }
+            selected.forEach(key => {
+                const m = ALL_METRICS[key];
+                const div = document.createElement('div');
+                div.className = 'poster-stat';
+                div.innerHTML = `
+                    <div class="poster-stat-value">${m.value}</div>
+                    <div class="poster-stat-label">${m.name}(${m.unit})</div>
+                `;
+                grid.appendChild(div);
+            });
         }
 
         function closePoster() {
@@ -2031,19 +2320,18 @@
                 </div>
                 <!-- Poster Title -->
                 <div class="poster-title">✨ 今日打卡完成 ✨</div>
-                <!-- Stats Grid -->
-                <div class="poster-stats">
-                    <div class="poster-stat">
-                        <div class="poster-stat-value">68.5</div>
-                        <div class="poster-stat-label">体重(kg)</div>
-                    </div>
-                    <div class="poster-stat">
-                        <div class="poster-stat-value">18.5</div>
-                        <div class="poster-stat-label">体脂率(%)</div>
-                    </div>
-                    <div class="poster-stat">
-                        <div class="poster-stat-value">45</div>
-                        <div class="poster-stat-label">运动时长(min)</div>
+                <!-- Stats Grid (动态渲染) -->
+                <div class="poster-stats" id="poster-stats-grid">
+                    <!-- JS动态填充 -->
+                </div>
+                <!-- Metric Selector for Poster -->
+                <div class="poster-metric-selector" id="poster-metric-selector">
+                    <div class="pms-title">选择海报展示指标（1-3个）</div>
+                    <div class="pms-options">
+                        <label class="pms-option"><input type="checkbox" value="weight" checked onchange="updatePosterMetrics()"> ⚖️ 体重</label>
+                        <label class="pms-option"><input type="checkbox" value="bodyfat" checked onchange="updatePosterMetrics()"> 🔥 体脂率</label>
+                        <label class="pms-option"><input type="checkbox" value="whr" onchange="updatePosterMetrics()"> 📏 腰臀比</label>
+                        <label class="pms-option"><input type="checkbox" value="exercise" checked onchange="updatePosterMetrics()"> 🏃 运动时长</label>
                     </div>
                 </div>
                 <!-- Divider -->
@@ -2142,6 +2430,91 @@
                 </button>
             </div>
             <button class="badge-poster-close" onclick="closeBadgePoster()">✕ 关闭</button>
+        </div>
+    </div>
+
+    <!-- ===== CORE METRIC SELECTOR MODAL ===== -->
+    <div id="core-selector-modal" class="selector-modal">
+        <div class="selector-overlay" onclick="closeCoreSelector()"></div>
+        <div class="selector-sheet">
+            <div class="selector-title">选择首页展示指标</div>
+            <div class="selector-subtitle">从4个指标中选择3个展示在首页</div>
+            <div class="selector-options" id="core-options">
+                <div class="selector-option" data-key="weight" onclick="toggleCoreMetric(this)">
+                    <div class="opt-check">✓</div>
+                    <div class="opt-icon">⚖️</div>
+                    <div class="opt-name">体重</div>
+                    <div class="opt-unit">kg</div>
+                </div>
+                <div class="selector-option" data-key="bodyfat" onclick="toggleCoreMetric(this)">
+                    <div class="opt-check">✓</div>
+                    <div class="opt-icon">🔥</div>
+                    <div class="opt-name">体脂率</div>
+                    <div class="opt-unit">%</div>
+                </div>
+                <div class="selector-option" data-key="whr" onclick="toggleCoreMetric(this)">
+                    <div class="opt-check">✓</div>
+                    <div class="opt-icon">📏</div>
+                    <div class="opt-name">腰臀比</div>
+                    <div class="opt-unit">比值</div>
+                </div>
+                <div class="selector-option" data-key="exercise" onclick="toggleCoreMetric(this)">
+                    <div class="opt-check">✓</div>
+                    <div class="opt-icon">🏃</div>
+                    <div class="opt-name">运动时长</div>
+                    <div class="opt-unit">分钟</div>
+                </div>
+            </div>
+            <div class="selector-hint" id="selector-hint">已选择 3/3 个指标</div>
+            <button class="selector-btn" id="selector-confirm" onclick="confirmCoreSelection()">确认选择</button>
+        </div>
+    </div>
+
+    <!-- ===== GOAL SETTING MODAL ===== -->
+    <div id="goal-modal" class="goal-modal">
+        <div class="selector-overlay" onclick="closeGoalSetting()"></div>
+        <div class="goal-sheet">
+            <div class="selector-title">设置目标值</div>
+            <div class="selector-subtitle">为每个指标设定你的目标</div>
+            <div class="goal-input-row">
+                <div class="goal-input-icon">⚖️</div>
+                <div class="goal-input-info">
+                    <div class="goal-input-name">目标体重</div>
+                    <div class="goal-input-desc">当前 68.5 kg</div>
+                </div>
+                <input class="goal-input-field" type="number" id="goal-weight" value="65" placeholder="目标">
+                <div class="goal-input-unit">kg</div>
+            </div>
+            <div class="goal-input-row">
+                <div class="goal-input-icon">🔥</div>
+                <div class="goal-input-info">
+                    <div class="goal-input-name">目标体脂率</div>
+                    <div class="goal-input-desc">当前 18.5%</div>
+                </div>
+                <input class="goal-input-field" type="number" id="goal-bodyfat" value="15" placeholder="目标">
+                <div class="goal-input-unit">%</div>
+            </div>
+            <div class="goal-input-row">
+                <div class="goal-input-icon">📏</div>
+                <div class="goal-input-info">
+                    <div class="goal-input-name">目标腰臀比</div>
+                    <div class="goal-input-desc">当前 0.82</div>
+                </div>
+                <input class="goal-input-field" type="number" id="goal-whr" value="0.80" step="0.01" placeholder="目标">
+                <div class="goal-input-unit">比值</div>
+            </div>
+            <div class="goal-input-row">
+                <div class="goal-input-icon">🏃</div>
+                <div class="goal-input-info">
+                    <div class="goal-input-name">目标运动时长</div>
+                    <div class="goal-input-desc">每日目标</div>
+                </div>
+                <input class="goal-input-field" type="number" id="goal-exercise" value="60" placeholder="目标">
+                <div class="goal-input-unit">分钟</div>
+            </div>
+            <div style="margin-top: 16px;">
+                <button class="selector-btn" onclick="saveGoals()">保存目标</button>
+            </div>
         </div>
     </div>
 </body>
