@@ -1646,12 +1646,12 @@
                     </div>
                     <div class="input-row">
                         <span class="input-label">体重</span>
-                        <input class="input-field" type="number" placeholder="输入体重" value="68.5">
+                        <input class="input-field" type="number" placeholder="输入体重" value="65.3">
                         <span class="input-unit">kg</span>
                     </div>
                     <div class="input-row">
                         <span class="input-label">体脂率</span>
-                        <input class="input-field" type="number" placeholder="输入体脂率" value="18.5">
+                        <input class="input-field" type="number" placeholder="输入体脂率" value="18.1">
                         <span class="input-unit">%</span>
                     </div>
                     <div class="input-row">
@@ -2107,25 +2107,22 @@
             el.classList.add('active');
         }
 
-        // ===== CHART DATA =====
-        const FULL_WEIGHT_DATA = [
-            74.2,73.9,73.5,73.8,73.2,72.9,72.5,72.3,72.0,71.8,71.5,71.2,71.0,70.8,70.5,
-            70.3,70.0,69.8,69.5,69.3,69.0,68.8,68.5,68.3,68.5,68.2,68.0,67.8,67.5,67.3,
-            67.5,67.2,67.0,66.8,66.5,66.3,66.0,65.8,65.5,65.3,65.0,64.8,64.5,64.3,64.0
-        ];
+        // ===== 3 MONTHS MOCK DATA =====
+        const MOCK_DATA_3M = [{"date": "2026-02-07", "weight": 74.1, "bodyfat": 25.8, "whr": 0.88, "exercise": 0}, {"date": "2026-02-08", "weight": 73.7, "bodyfat": 26.0, "whr": 0.88, "exercise": 67}, {"date": "2026-02-09", "weight": 73.5, "bodyfat": 25.7, "whr": 0.88, "exercise": 1}, {"date": "2026-02-10", "weight": 73.8, "bodyfat": 25.8, "whr": 0.88, "exercise": 28}, {"date": "2026-02-11", "weight": 73.8, "bodyfat": 25.4, "whr": 0.88, "exercise": 44}, {"date": "2026-02-12", "weight": 73.4, "bodyfat": 25.4, "whr": 0.88, "exercise": 0}, {"date": "2026-02-13", "weight": 73.2, "bodyfat": 25.6, "whr": 0.88, "exercise": 0}, {"date": "2026-02-14", "weight": 73.3, "bodyfat": 25.2, "whr": 0.88, "exercise": 35}, {"date": "2026-02-15", "weight": 73.4, "bodyfat": 25.3, "whr": 0.88, "exercise": 66}, {"date": "2026-02-16", "weight": 72.8, "bodyfat": 25.3, "whr": 0.88, "exercise": 5}, {"date": "2026-02-17", "weight": 73.2, "bodyfat": 25.1, "whr": 0.87, "exercise": 53}, {"date": "2026-02-18", "weight": 72.8, "bodyfat": 24.9, "whr": 0.87, "exercise": 59}, {"date": "2026-02-19", "weight": 72.5, "bodyfat": 25.0, "whr": 0.87, "exercise": 15}, {"date": "2026-02-20", "weight": 72.6, "bodyfat": 25.0, "whr": 0.87, "exercise": 35}, {"date": "2026-02-21", "weight": 72.5, "bodyfat": 24.8, "whr": 0.86, "exercise": 0}, {"date": "2026-02-22", "weight": 72.4, "bodyfat": 24.6, "whr": 0.86, "exercise": 90}, {"date": "2026-02-23", "weight": 72.5, "bodyfat": 24.4, "whr": 0.87, "exercise": 56}, {"date": "2026-02-24", "weight": 72.3, "bodyfat": 24.4, "whr": 0.86, "exercise": 35}, {"date": "2026-02-25", "weight": 72.3, "bodyfat": 24.4, "whr": 0.87, "exercise": 23}, {"date": "2026-02-26", "weight": 72.4, "bodyfat": 24.3, "whr": 0.85, "exercise": 3}, {"date": "2026-02-27", "weight": 71.8, "bodyfat": 24.1, "whr": 0.87, "exercise": 0}, {"date": "2026-02-28", "weight": 71.8, "bodyfat": 24.3, "whr": 0.86, "exercise": 65}, {"date": "2026-03-01", "weight": 71.5, "bodyfat": 24.1, "whr": 0.86, "exercise": 64}, {"date": "2026-03-02", "weight": 71.8, "bodyfat": 23.9, "whr": 0.86, "exercise": 10}, {"date": "2026-03-03", "weight": 71.8, "bodyfat": 24.0, "whr": 0.85, "exercise": 32}, {"date": "2026-03-04", "weight": 71.5, "bodyfat": 23.6, "whr": 0.86, "exercise": 53}, {"date": "2026-03-05", "weight": 71.4, "bodyfat": 23.5, "whr": 0.86, "exercise": 34}, {"date": "2026-03-06", "weight": 71.5, "bodyfat": 23.7, "whr": 0.86, "exercise": 0}, {"date": "2026-03-07", "weight": 71.4, "bodyfat": 23.6, "whr": 0.86, "exercise": 49}, {"date": "2026-03-08", "weight": 70.9, "bodyfat": 23.4, "whr": 0.85, "exercise": 76}, {"date": "2026-03-09", "weight": 70.7, "bodyfat": 23.4, "whr": 0.86, "exercise": 8}, {"date": "2026-03-10", "weight": 71.1, "bodyfat": 23.1, "whr": 0.85, "exercise": 38}, {"date": "2026-03-11", "weight": 70.6, "bodyfat": 23.1, "whr": 0.86, "exercise": 12}, {"date": "2026-03-12", "weight": 70.6, "bodyfat": 23.1, "whr": 0.85, "exercise": 57}, {"date": "2026-03-13", "weight": 70.3, "bodyfat": 22.8, "whr": 0.85, "exercise": 37}, {"date": "2026-03-14", "weight": 70.5, "bodyfat": 22.7, "whr": 0.85, "exercise": 33}, {"date": "2026-03-15", "weight": 70.6, "bodyfat": 22.9, "whr": 0.84, "exercise": 45}, {"date": "2026-03-16", "weight": 70.2, "bodyfat": 22.7, "whr": 0.85, "exercise": 56}, {"date": "2026-03-17", "weight": 70.1, "bodyfat": 22.7, "whr": 0.85, "exercise": 0}, {"date": "2026-03-18", "weight": 70.2, "bodyfat": 22.4, "whr": 0.84, "exercise": 55}, {"date": "2026-03-19", "weight": 70.1, "bodyfat": 22.6, "whr": 0.84, "exercise": 25}, {"date": "2026-03-20", "weight": 70.0, "bodyfat": 22.2, "whr": 0.84, "exercise": 34}, {"date": "2026-03-21", "weight": 69.7, "bodyfat": 22.1, "whr": 0.84, "exercise": 0}, {"date": "2026-03-22", "weight": 69.8, "bodyfat": 22.3, "whr": 0.83, "exercise": 71}, {"date": "2026-03-23", "weight": 69.8, "bodyfat": 22.2, "whr": 0.85, "exercise": 54}, {"date": "2026-03-24", "weight": 69.4, "bodyfat": 21.9, "whr": 0.85, "exercise": 0}, {"date": "2026-03-25", "weight": 69.3, "bodyfat": 22.1, "whr": 0.83, "exercise": 50}, {"date": "2026-03-26", "weight": 69.1, "bodyfat": 21.9, "whr": 0.84, "exercise": 50}, {"date": "2026-03-27", "weight": 69.3, "bodyfat": 21.5, "whr": 0.83, "exercise": 3}, {"date": "2026-03-28", "weight": 69.1, "bodyfat": 21.7, "whr": 0.83, "exercise": 67}, {"date": "2026-03-29", "weight": 69.2, "bodyfat": 21.5, "whr": 0.83, "exercise": 0}, {"date": "2026-03-30", "weight": 68.7, "bodyfat": 21.5, "whr": 0.84, "exercise": 15}, {"date": "2026-03-31", "weight": 69.0, "bodyfat": 21.4, "whr": 0.83, "exercise": 2}, {"date": "2026-04-01", "weight": 68.6, "bodyfat": 21.3, "whr": 0.83, "exercise": 59}, {"date": "2026-04-02", "weight": 68.6, "bodyfat": 21.1, "whr": 0.83, "exercise": 8}, {"date": "2026-04-03", "weight": 68.3, "bodyfat": 21.0, "whr": 0.84, "exercise": 0}, {"date": "2026-04-04", "weight": 68.4, "bodyfat": 21.0, "whr": 0.82, "exercise": 64}, {"date": "2026-04-05", "weight": 68.1, "bodyfat": 21.0, "whr": 0.84, "exercise": 86}, {"date": "2026-04-06", "weight": 68.0, "bodyfat": 20.8, "whr": 0.83, "exercise": 19}, {"date": "2026-04-07", "weight": 68.3, "bodyfat": 20.8, "whr": 0.82, "exercise": 52}, {"date": "2026-04-08", "weight": 68.2, "bodyfat": 20.4, "whr": 0.83, "exercise": 0}, {"date": "2026-04-09", "weight": 67.6, "bodyfat": 20.5, "whr": 0.82, "exercise": 38}, {"date": "2026-04-10", "weight": 67.6, "bodyfat": 20.5, "whr": 0.83, "exercise": 32}, {"date": "2026-04-11", "weight": 67.9, "bodyfat": 20.5, "whr": 0.82, "exercise": 57}, {"date": "2026-04-12", "weight": 67.3, "bodyfat": 20.2, "whr": 0.82, "exercise": 46}, {"date": "2026-04-13", "weight": 67.4, "bodyfat": 20.2, "whr": 0.82, "exercise": 0}, {"date": "2026-04-14", "weight": 67.6, "bodyfat": 20.2, "whr": 0.82, "exercise": 53}, {"date": "2026-04-15", "weight": 67.3, "bodyfat": 19.9, "whr": 0.81, "exercise": 23}, {"date": "2026-04-16", "weight": 67.3, "bodyfat": 20.0, "whr": 0.83, "exercise": 13}, {"date": "2026-04-17", "weight": 67.1, "bodyfat": 19.7, "whr": 0.82, "exercise": 55}, {"date": "2026-04-18", "weight": 67.0, "bodyfat": 19.6, "whr": 0.83, "exercise": 85}, {"date": "2026-04-19", "weight": 67.0, "bodyfat": 19.5, "whr": 0.81, "exercise": 41}, {"date": "2026-04-20", "weight": 66.6, "bodyfat": 19.7, "whr": 0.82, "exercise": 55}, {"date": "2026-04-21", "weight": 66.5, "bodyfat": 19.3, "whr": 0.82, "exercise": 24}, {"date": "2026-04-22", "weight": 66.7, "bodyfat": 19.2, "whr": 0.82, "exercise": 29}, {"date": "2026-04-23", "weight": 66.6, "bodyfat": 19.4, "whr": 0.81, "exercise": 42}, {"date": "2026-04-24", "weight": 66.2, "bodyfat": 19.3, "whr": 0.82, "exercise": 17}, {"date": "2026-04-25", "weight": 66.2, "bodyfat": 19.2, "whr": 0.82, "exercise": 51}, {"date": "2026-04-26", "weight": 65.9, "bodyfat": 19.2, "whr": 0.80, "exercise": 0}, {"date": "2026-04-27", "weight": 66.1, "bodyfat": 18.8, "whr": 0.81, "exercise": 27}, {"date": "2026-04-28", "weight": 65.9, "bodyfat": 18.8, "whr": 0.81, "exercise": 0}, {"date": "2026-04-29", "weight": 65.8, "bodyfat": 18.7, "whr": 0.81, "exercise": 43}, {"date": "2026-04-30", "weight": 65.9, "bodyfat": 18.7, "whr": 0.80, "exercise": 4}, {"date": "2026-05-01", "weight": 65.9, "bodyfat": 18.6, "whr": 0.81, "exercise": 7}, {"date": "2026-05-02", "weight": 65.4, "bodyfat": 18.4, "whr": 0.80, "exercise": 55}, {"date": "2026-05-03", "weight": 65.4, "bodyfat": 18.2, "whr": 0.81, "exercise": 54}, {"date": "2026-05-04", "weight": 65.5, "bodyfat": 18.3, "whr": 0.80, "exercise": 35}, {"date": "2026-05-05", "weight": 65.1, "bodyfat": 18.1, "whr": 0.81, "exercise": 38}, {"date": "2026-05-06", "weight": 65.1, "bodyfat": 18.1, "whr": 0.80, "exercise": 30}, {"date": "2026-05-07", "weight": 65.3, "bodyfat": 18.1, "whr": 0.80, "exercise": 18}];
         let chartDataRange = { type: 'preset', days: 30 };
 
         function getChartData() {
-            let count;
             if (chartDataRange.type === 'preset') {
-                count = chartDataRange.days;
+                const count = Math.min(chartDataRange.days, MOCK_DATA_3M.length);
+                return MOCK_DATA_3M.slice(-count).map(d => d.weight);
             } else {
                 const start = new Date(chartDataRange.start);
                 const end = new Date(chartDataRange.end);
-                count = Math.max(7, Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1);
+                return MOCK_DATA_3M.filter(d => {
+                    const dt = new Date(d.date);
+                    return dt >= start && dt <= end;
+                }).map(d => d.weight);
             }
-            count = Math.min(count, FULL_WEIGHT_DATA.length);
-            return FULL_WEIGHT_DATA.slice(-count);
         }
 
         function drawChart() {
@@ -2280,10 +2277,10 @@
 
         // ===== CORE METRICS DATA =====
         const ALL_METRICS = {
-            weight:  { icon: '⚖️', name: '今日体重', unit: 'kg',    value: 68.5,  change: '↓ 0.3',  goal: 65 },
-            bodyfat: { icon: '🔥', name: '体脂率',   unit: '%',     value: 18.5,  change: '↓ 0.2',  goal: 15 },
-            whr:     { icon: '📏', name: '腰臀比',   unit: '',      value: 0.82,  change: '↓ 0.01', goal: 0.80 },
-            exercise:{ icon: '🏃', name: '运动时长', unit: 'min',   value: 45,    change: '↑ 10',   goal: 60 },
+            weight:  { icon: '⚖️', name: '今日体重', unit: 'kg',    value: 65.3,  change: '↓ 8.8',  goal: 65 },
+            bodyfat: { icon: '🔥', name: '体脂率',   unit: '%',     value: 18.1,  change: '↓ 7.7',  goal: 15 },
+            whr:     { icon: '📏', name: '腰臀比',   unit: '',      value: 0.80,  change: '↓ 0.08', goal: 0.80 },
+            exercise:{ icon: '🏃', name: '运动时长', unit: 'min',   value: 18,    change: '↑ 18',   goal: 60 },
         };
         let selectedMetrics = ['weight', 'bodyfat', 'exercise']; // 默认展示3个
         let goalValues = { weight: 65, bodyfat: 15, whr: 0.80, exercise: 60 };
