@@ -2028,6 +2028,10 @@
             event.currentTarget.classList.add('active');
             // Scroll to top
             document.getElementById('page-' + name).scrollTop = 0;
+            // Render home stats when switching to home
+            if (name === 'home') {
+                setTimeout(renderHomeStats, 50);
+            }
         }
 
         // Checkin tag toggle (for diet tags)
