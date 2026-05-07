@@ -591,6 +591,102 @@
             margin-bottom: 4px;
         }
         .chart-subtitle { font-size: 11px; color: var(--text-light); }
+        .chart-header-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+        .chart-date-picker {
+            font-size: 12px;
+            color: var(--primary);
+            background: rgba(108,92,231,0.08);
+            padding: 6px 12px;
+            border-radius: 50px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .chart-date-picker:active { opacity: 0.7; }
+
+        /* Date Range Picker Modal */
+        .date-picker-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 9999;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .date-picker-sheet {
+            position: relative;
+            z-index: 1;
+            background: white;
+            border-radius: 24px 24px 0 0;
+            padding: 20px 16px 28px;
+            width: 100%;
+            max-width: 430px;
+            animation: slideUpSheet 0.3s ease;
+        }
+        .dp-title {
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .dp-presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .dp-preset {
+            padding: 8px 14px;
+            border-radius: 50px;
+            border: 1.5px solid #E8E8F0;
+            background: white;
+            font-size: 13px;
+            cursor: pointer;
+            color: var(--text);
+        }
+        .dp-preset.active {
+            border-color: var(--primary);
+            background: rgba(108,92,231,0.08);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .dp-custom {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #F8F8FC;
+            border-radius: 14px;
+        }
+        .dp-custom-label {
+            font-size: 13px;
+            color: var(--text);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .dp-date-input {
+            flex: 1;
+            padding: 10px;
+            border: 1.5px solid #E8E8F0;
+            border-radius: 10px;
+            font-size: 14px;
+            text-align: center;
+            outline: none;
+            font-family: inherit;
+        }
+        .dp-date-input:focus { border-color: var(--primary); }
+        .dp-sep { color: var(--text-light); font-size: 13px; }
+        .dp-hint {
+            font-size: 12px;
+            color: var(--text-light);
+            text-align: center;
+            margin-bottom: 16px;
+        }
 
         .weight-chart {
             margin-top: 16px;
@@ -1679,8 +1775,15 @@
                 </div>
 
                 <div class="chart-card">
-                    <div class="chart-title">体重趋势</div>
-                    <div class="chart-subtitle">最近30天</div>
+                    <div class="chart-header-row">
+                        <div>
+                            <div class="chart-title">体重趋势</div>
+                            <div class="chart-subtitle" id="chart-range-label">最近30天</div>
+                        </div>
+                        <div class="chart-date-picker" onclick="showDateRangePicker()">
+                            <span>📅 选择日期</span>
+                        </div>
+                    </div>
                     <div class="weight-chart">
                         <canvas class="chart-canvas" id="weightChart"></canvas>
                     </div>
@@ -2004,7 +2107,27 @@
             el.classList.add('active');
         }
 
-        // Draw weight chart
+        // ===== CHART DATA =====
+        const FULL_WEIGHT_DATA = [
+            74.2,73.9,73.5,73.8,73.2,72.9,72.5,72.3,72.0,71.8,71.5,71.2,71.0,70.8,70.5,
+            70.3,70.0,69.8,69.5,69.3,69.0,68.8,68.5,68.3,68.5,68.2,68.0,67.8,67.5,67.3,
+            67.5,67.2,67.0,66.8,66.5,66.3,66.0,65.8,65.5,65.3,65.0,64.8,64.5,64.3,64.0
+        ];
+        let chartDataRange = { type: 'preset', days: 30 };
+
+        function getChartData() {
+            let count;
+            if (chartDataRange.type === 'preset') {
+                count = chartDataRange.days;
+            } else {
+                const start = new Date(chartDataRange.start);
+                const end = new Date(chartDataRange.end);
+                count = Math.max(7, Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1);
+            }
+            count = Math.min(count, FULL_WEIGHT_DATA.length);
+            return FULL_WEIGHT_DATA.slice(-count);
+        }
+
         function drawChart() {
             const canvas = document.getElementById('weightChart');
             if (!canvas) return;
@@ -2019,12 +2142,14 @@
 
             const w = rect.width;
             const h = rect.height;
-            const data = [72.1,71.8,71.5,71.9,71.3,70.8,70.5,70.2,70.6,70.1,69.8,69.5,69.2,69.6,69.1,68.8,69.0,68.5,68.7,68.3,68.5,68.2,68.5,68.5];
+            const data = getChartData();
             const minV = Math.min(...data) - 1;
             const maxV = Math.max(...data) + 1;
             const pad = { top: 10, bottom: 20, left: 5, right: 5 };
             const cw = w - pad.left - pad.right;
             const ch = h - pad.top - pad.bottom;
+
+            ctx.clearRect(0, 0, w, h);
 
             // Draw gradient fill
             const gradient = ctx.createLinearGradient(0, pad.top, 0, h - pad.bottom);
@@ -2057,7 +2182,12 @@
             ctx.stroke();
 
             // Draw dots for key points
-            [0, 6, 11, 17, data.length - 1].forEach(i => {
+            const keyIndices = [0];
+            if (data.length > 7) keyIndices.push(Math.floor(data.length / 4));
+            if (data.length > 14) keyIndices.push(Math.floor(data.length / 2));
+            if (data.length > 21) keyIndices.push(Math.floor(data.length * 3 / 4));
+            keyIndices.push(data.length - 1);
+            [...new Set(keyIndices)].forEach(i => {
                 if (i >= data.length) return;
                 const x = pad.left + (i / (data.length - 1)) * cw;
                 const y = pad.top + (1 - (data[i] - minV) / (maxV - minV)) * ch;
@@ -2084,6 +2214,68 @@
             ctx.font = '10px sans-serif';
             ctx.fillStyle = '#E17055';
             ctx.fillText('目标 65kg', w - pad.right - 50, targetY - 6);
+        }
+
+        // ===== DATE RANGE PICKER =====
+        function showDateRangePicker() {
+            document.getElementById('date-picker-modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            const today = new Date();
+            const endStr = today.toISOString().split('T')[0];
+            const start30 = new Date(today);
+            start30.setDate(start30.getDate() - 29);
+            const startStr = start30.toISOString().split('T')[0];
+            document.getElementById('dp-end').value = endStr;
+            document.getElementById('dp-start').value = startStr;
+            updateDateHint();
+        }
+        function closeDateRangePicker() {
+            document.getElementById('date-picker-modal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+        function selectDatePreset(btn) {
+            document.querySelectorAll('.dp-preset').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const days = parseInt(btn.dataset.days);
+            chartDataRange = { type: 'preset', days: days };
+            const today = new Date();
+            const start = new Date(today);
+            start.setDate(start.getDate() - days + 1);
+            document.getElementById('dp-end').value = today.toISOString().split('T')[0];
+            document.getElementById('dp-start').value = start.toISOString().split('T')[0];
+            updateDateHint();
+        }
+        function updateDateHint() {
+            const start = document.getElementById('dp-start').value;
+            const end = document.getElementById('dp-end').value;
+            if (start && end) {
+                const s = new Date(start);
+                const e = new Date(end);
+                const days = Math.ceil((e - s) / (1000 * 60 * 60 * 24)) + 1;
+                document.getElementById('dp-hint').textContent = '已选择：' + start + ' 至 ' + end + '（共' + days + '天）';
+            }
+        }
+        document.getElementById('dp-start').addEventListener('change', function() {
+            document.querySelectorAll('.dp-preset').forEach(b => b.classList.remove('active'));
+            chartDataRange = { type: 'custom', start: this.value, end: document.getElementById('dp-end').value };
+            updateDateHint();
+        });
+        document.getElementById('dp-end').addEventListener('change', function() {
+            document.querySelectorAll('.dp-preset').forEach(b => b.classList.remove('active'));
+            chartDataRange = { type: 'custom', start: document.getElementById('dp-start').value, end: this.value };
+            updateDateHint();
+        });
+        function confirmDateRange() {
+            closeDateRangePicker();
+            drawChart();
+            const start = document.getElementById('dp-start').value;
+            const end = document.getElementById('dp-end').value;
+            if (start && end) {
+                const s = new Date(start);
+                const e = new Date(end);
+                const days = Math.ceil((e - s) / (1000 * 60 * 60 * 24)) + 1;
+                document.getElementById('chart-range-label').textContent = start + ' 至 ' + end + '（' + days + '天）';
+            }
         }
 
         // ===== CORE METRICS DATA =====
@@ -2515,6 +2707,29 @@
             <div style="margin-top: 16px;">
                 <button class="selector-btn" onclick="saveGoals()">保存目标</button>
             </div>
+        </div>
+    </div>
+
+    <!-- ===== DATE RANGE PICKER MODAL ===== -->
+    <div id="date-picker-modal" class="date-picker-modal">
+        <div class="selector-overlay" onclick="closeDateRangePicker()"></div>
+        <div class="date-picker-sheet">
+            <div class="dp-title">选择时间范围</div>
+            <div class="dp-presets">
+                <button class="dp-preset active" data-days="7" onclick="selectDatePreset(this)">最近7天</button>
+                <button class="dp-preset" data-days="14" onclick="selectDatePreset(this)">最近14天</button>
+                <button class="dp-preset" data-days="30" onclick="selectDatePreset(this)">最近30天</button>
+                <button class="dp-preset" data-days="90" onclick="selectDatePreset(this)">最近3个月</button>
+                <button class="dp-preset" data-days="180" onclick="selectDatePreset(this)">最近6个月</button>
+            </div>
+            <div class="dp-custom">
+                <span class="dp-custom-label">自定义</span>
+                <input class="dp-date-input" type="date" id="dp-start">
+                <span class="dp-sep">至</span>
+                <input class="dp-date-input" type="date" id="dp-end">
+            </div>
+            <div class="dp-hint" id="dp-hint">已选择：最近30天</div>
+            <button class="selector-btn" onclick="confirmDateRange()">确认</button>
         </div>
     </div>
 </body>
